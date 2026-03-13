@@ -17,6 +17,7 @@ Fonts:
 - Avenir
 
 */
+@import "tailwindcss";
 
 * {
     margin: 0;
