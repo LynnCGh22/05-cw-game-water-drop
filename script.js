@@ -1,6 +1,17 @@
 // Variables to control game state
 let gameRunning = false; // Keeps track of whether game is active or not
 let dropMaker; // Will store our timer that creates drops regularly
+const CLEAN_DROP_CHANCE = 0.7;
+
+function getRandomDropType() {
+  if (Math.random() < CLEAN_DROP_CHANCE) {
+    return "water-drop";
+  }
+
+  return Math.random() < 0.5
+    ? "dirty-water-drop-green"
+    : "dirty-water-drop-brown";
+}
 
 // Wait for button click to start the game
 document.getElementById("start-btn").addEventListener("click", startGame);
@@ -18,7 +29,7 @@ function startGame() {
 function createDrop() {
   // Create a new div element that will be our water drop
   const drop = document.createElement("div");
-  drop.className = "water-drop";
+  drop.className = getRandomDropType();
 
   // Make drops different sizes for visual variety
   const initialSize = 60;
