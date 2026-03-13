@@ -11,6 +11,8 @@ Secondary Colors:
 - Red:        #F5402C
 - Dark Green: #159A48
 - Pink:       #F16061
+- Yellow:     #FFC907
+- Blue:       #2E9DF7
 
 Fonts:
 - Proxima Nova
@@ -72,7 +74,7 @@ body {
 
 #start-btn {
     padding: 8px 16px;
-    background-color: #4CAF50;
+    background-color: lightskyblue;
     color: white;
     border: none;
     border-radius: 4px;
@@ -81,7 +83,7 @@ body {
 }
 
 #start-btn:hover {
-    background-color: #45a049;
+    background-color: lightskyblue;
 }
 
 .score {
@@ -95,6 +97,34 @@ body {
     width: 60px;  /* increased from 40px */
     height: 60px; /* increased from 40px */
     background-color: #0099ff;
+    border-radius: 50%;
+    animation: dropFall linear forwards;
+    transform-origin: center;
+    cursor: pointer;
+    padding: 15px;  /* Add padding for larger click area */
+    margin: -15px;  /* Offset padding to maintain visual size */
+    transition: transform 0.1s ease;  /* Smooth hover effect */
+}
+
+.dirty-water-drop-brown {
+    position: absolute;
+    width: 60px;  /* increased from 40px */
+    height: 60px; /* increased from 40px */
+    background-color: chocolate;
+    border-radius: 50%;
+    animation: dropFall linear forwards;
+    transform-origin: center;
+    cursor: pointer;
+    padding: 15px;  /* Add padding for larger click area */
+    margin: -15px;  /* Offset padding to maintain visual size */
+    transition: transform 0.1s ease;  /* Smooth hover effect */
+}
+
+.dirty-water-drop-green {
+    position: absolute;
+    width: 60px;  /* increased from 40px */
+    height: 60px; /* increased from 40px */
+    background-color: #4FCB53;
     border-radius: 50%;
     animation: dropFall linear forwards;
     transform-origin: center;
