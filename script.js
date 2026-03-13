@@ -2,6 +2,12 @@
 let gameRunning = false; // Keeps track of whether game is active or not
 let dropMaker; // Will store our timer that creates drops regularly
 const CLEAN_DROP_CHANCE = 0.7;
+const catcher = document.querySelector(".catcher");
+const catcherNav = document.getElementById("catcher-nav");
+
+function updateCatcherPosition(positionPercent) {
+  catcher.style.left = `${positionPercent}%`;
+}
 
 function getRandomDropType() {
   if (Math.random() < CLEAN_DROP_CHANCE) {
@@ -15,6 +21,11 @@ function getRandomDropType() {
 
 // Wait for button click to start the game
 document.getElementById("start-btn").addEventListener("click", startGame);
+catcherNav.addEventListener("input", (event) => {
+  updateCatcherPosition(event.target.value);
+});
+
+updateCatcherPosition(catcherNav.value);
 
 function startGame() {
   // Prevent multiple games from running at once

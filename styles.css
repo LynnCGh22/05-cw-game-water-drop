@@ -104,6 +104,32 @@ body {
     font-weight: bold;
 }
 
+.movement-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 800px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 2px solid rgba(29, 79, 115, 0.18);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(17, 54, 79, 0.12);
+}
+
+.movement-label {
+    color: #1d4f73;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+#catcher-nav {
+    width: 100%;
+    accent-color: #159A48;
+    cursor: ew-resize;
+}
+
 .water-drop {
     position: absolute;
     width: 60px;  /* increased from 40px */
@@ -336,7 +362,7 @@ body {
 }
 
 @media (max-width: 850px) {
-    .game-wrapper, .score-panel, #game-container {
+    .game-wrapper, .score-panel, #game-container, .movement-nav {
         width: 95vw;
     }
 
