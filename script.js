@@ -175,4 +175,16 @@ function createDrop() {
   drop.addEventListener("animationend", () => {
     resolveDrop(); // Clean up drops that weren't caught
   });
+
+  // Add a conditional if the user clicks pause the game
+  if (document.getElementById("pause-btn")) {
+    document.getElementById("pause-btn").addEventListener("click", () => {
+      if (!gameRunning) return;
+      
+      gameRunning = false;
+      clearInterval(dropMaker);
+      clearInterval(timerInterval);
+    });
+  }
+  
 }
