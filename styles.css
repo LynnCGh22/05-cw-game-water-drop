@@ -358,8 +358,8 @@ body {
     width: 26px;
     height: 26px;
     transform: translateX(-50%);
-    background: #f8d7b5;
-    border: 3px solid #131313;
+    background: #c4a484;
+    border: 3px solid black;
     border-radius: 50%;
 }
 
@@ -370,7 +370,7 @@ body {
     width: 4px;
     height: 54px;
     transform: translateX(-50%);
-    background: #131313;
+    background: black;
 }
 
 .figure-arm,
