@@ -1,8 +1,10 @@
 // Variables to control game state
 let gameRunning = false; // Keeps track of whether game is active or not
+let gamePaused = false;
 let dropMaker; // Will store our timer that creates drops regularly
 let timerInterval;
 const GAME_DURATION = 30;
+let timeLeft = GAME_DURATION;
 const CLEAN_DROP_CHANCE = 0.7;
 const SCORE_PER_CLEAN_DROP = 10;
 const SCORE_PER_DIRTY_DROP = -10;
@@ -69,34 +71,25 @@ function getDropStartX(size) {
 
 // Wait for button click to start the game
 document.getElementById("start-btn").addEventListener("click", startGame);
+document.getElementById("pause-btn").addEventListener("click", pauseGame);
+document.getElementById("resume-btn").addEventListener("click", resumeGame);
+document.getElementById("restart-btn").addEventListener("click", restartGame);
+document.getElementById("end-btn").addEventListener("click", endGameAndReset);
 catcherNav.addEventListener("input", (event) => {
   updateCatcherPosition(event.target.value);
 });
 
 updateCatcherPosition(catcherNav.value);
 
-function endGame() {
-  gameRunning = false;
-  clearInterval(dropMaker);
-  clearInterval(timerInterval);
-  document
-    .querySelectorAll(".clean-water-drop, .dirty-water-drop-green, .dirty-water-drop-brown")
-    .forEach((drop) => drop.remove());
-  alert(`Game Over! Your final score is: ${currentScore}`);
-  timeElement.textContent = GAME_DURATION;
+function showPauseOverlay() {
+  document.getElementById("pause-overlay").hidden = false;
 }
 
-function startGame() {
-  // Prevent multiple games from running at once
-  if (gameRunning) return;
+function hidePauseOverlay() {
+  document.getElementById("pause-overlay").hidden = true;
+}
 
-  gameRunning = true;
-  currentScore = 0;
-  updateScoreDisplay();
-
-  // Start the countdown timer
-  let timeLeft = GAME_DURATION;
-  timeElement.textContent = timeLeft;
+function startTimer() {
   timerInterval = setInterval(() => {
     timeLeft--;
     timeElement.textContent = timeLeft;
@@ -104,6 +97,91 @@ function startGame() {
       endGame();
     }
   }, 1000);
+}
+
+function endGame() {
+  gameRunning = false;
+  gamePaused = false;
+  clearInterval(dropMaker);
+  clearInterval(timerInterval);
+  document
+    .querySelectorAll(".clean-water-drop, .dirty-water-drop-green, .dirty-water-drop-brown")
+    .forEach((drop) => drop.remove());
+  hidePauseOverlay();
+  document.getElementById("pause-btn").hidden = true;
+  alert(`Game Over! Your final score is: ${currentScore}`);
+  timeLeft = GAME_DURATION;
+  timeElement.textContent = GAME_DURATION;
+}
+
+function pauseGame() {
+  if (!gameRunning) return;
+  gameRunning = false;
+  gamePaused = true;
+  clearInterval(dropMaker);
+  clearInterval(timerInterval);
+  document
+    .querySelectorAll(".clean-water-drop, .dirty-water-drop-green, .dirty-water-drop-brown")
+    .forEach((d) => (d.style.animationPlayState = "paused"));
+  showPauseOverlay();
+}
+
+function resumeGame() {
+  gamePaused = false;
+  gameRunning = true;
+  document
+    .querySelectorAll(".clean-water-drop, .dirty-water-drop-green, .dirty-water-drop-brown")
+    .forEach((d) => (d.style.animationPlayState = "running"));
+  startTimer();
+  dropMaker = setInterval(createDrop, 1000);
+  hidePauseOverlay();
+}
+
+function restartGame() {
+  clearInterval(dropMaker);
+  clearInterval(timerInterval);
+  gamePaused = false;
+  document
+    .querySelectorAll(".clean-water-drop, .dirty-water-drop-green, .dirty-water-drop-brown")
+    .forEach((drop) => drop.remove());
+  hidePauseOverlay();
+  currentScore = 0;
+  updateScoreDisplay();
+  timeLeft = GAME_DURATION;
+  timeElement.textContent = GAME_DURATION;
+  gameRunning = true;
+  startTimer();
+  dropMaker = setInterval(createDrop, 1000);
+}
+
+function endGameAndReset() {
+  clearInterval(dropMaker);
+  clearInterval(timerInterval);
+  gameRunning = false;
+  gamePaused = false;
+  document
+    .querySelectorAll(".clean-water-drop, .dirty-water-drop-green, .dirty-water-drop-brown")
+    .forEach((drop) => drop.remove());
+  hidePauseOverlay();
+  document.getElementById("pause-btn").hidden = true;
+  currentScore = 0;
+  updateScoreDisplay();
+  timeLeft = GAME_DURATION;
+  timeElement.textContent = GAME_DURATION;
+}
+
+function startGame() {
+  // Prevent multiple games from running at once
+  if (gameRunning || gamePaused) return;
+
+  gameRunning = true;
+  currentScore = 0;
+  updateScoreDisplay();
+  timeLeft = GAME_DURATION;
+  timeElement.textContent = timeLeft;
+  document.getElementById("pause-btn").hidden = false;
+
+  startTimer();
 
   // Create new drops every second (1000 milliseconds)
   dropMaker = setInterval(createDrop, 1000);
@@ -158,6 +236,11 @@ function createDrop() {
   function checkBucketCollision() {
     if (dropResolved || !drop.isConnected) return;
 
+    if (gamePaused) {
+      collisionFrameId = requestAnimationFrame(checkBucketCollision);
+      return;
+    }
+
     const dropRect = drop.getBoundingClientRect();
     const bucketRect = bucket.getBoundingClientRect();
 
@@ -175,16 +258,4 @@ function createDrop() {
   drop.addEventListener("animationend", () => {
     resolveDrop(); // Clean up drops that weren't caught
   });
-
-  // Add a conditional if the user clicks pause the game
-  if (document.getElementById("pause-btn")) {
-    document.getElementById("pause-btn").addEventListener("click", () => {
-      if (!gameRunning) return;
-      
-      gameRunning = false;
-      clearInterval(dropMaker);
-      clearInterval(timerInterval);
-    });
-  }
-  
 }

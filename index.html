@@ -29,9 +29,19 @@
             <div class="score">Score: <span id="score">0</span></div>
             <div class="timer">Time: <span id="time">30</span>s</div>
             <button id="start-btn">Start Game</button>
+            <button id="pause-btn" hidden>Pause</button>
         </div>
         
         <div id="game-container">
+            <div id="pause-overlay" hidden>
+                <div class="pause-panel">
+                    <h2 class="pause-title">Gameplay Paused</h2>
+                    <button id="resume-btn" class="pause-menu-btn">Return to Game</button>
+                    <button id="restart-btn" class="pause-menu-btn">Restart Game</button>
+                    <button id="end-btn" class="pause-menu-btn">End Game &amp; Reset Score</button>
+                </div>
+            </div>
+
             <div class="cloud-row" aria-hidden="true">
                 <span class="cloud"></span>
                 <span class="cloud"></span>

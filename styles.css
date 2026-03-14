@@ -109,6 +109,62 @@ body {
     font-weight: 600;
 }
 
+#pause-btn:hover {
+    background-color: #cc0000;
+}
+
+#pause-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(46, 157, 247, 0.82);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#pause-overlay[hidden] {
+    display: none;
+}
+
+.pause-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 36px 52px;
+    width: 440px;
+}
+
+.pause-title {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.pause-menu-btn {
+    width: 280px;
+    padding: 14px 24px;
+    background: #ffffff;
+    color: #131313;
+    border: 2px solid rgba(29, 79, 115, 0.4);
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.pause-menu-btn:hover {
+    background: #f0f8ff;
+    border-color: #1d4f73;
+}
+
 .score {
     flex: 0 1 auto;  /* Don't grow, can shrink, auto basis */
     font-size: 24px;
