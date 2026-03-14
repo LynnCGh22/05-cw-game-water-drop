@@ -76,7 +76,7 @@ function createDrop() {
   // Check for clicks on the drop to "catch" it
   drop.addEventListener("click", () => {
     // Check if the drop is a clean water drop
-    if (drop.classList.contains("water-drop")) {
+    if (drop.classList.contains("clean-water-drop")) {
       alert("You caught a clean water drop! Great job!");
     } else {
       alert("Oh no! You caught a dirty water drop. Try again!");
@@ -89,10 +89,25 @@ function createDrop() {
     DropCollectedScore += greenDropScore;
   } else if (drop.classList.contains("dirty-water-drop-brown")) {
     DropCollectedScore += brownDropScore;
-  } else if (drop.classList.contains("water-drop")) {
+  } else if (drop.classList.contains("clean-water-drop")) {
     DropCollectedScore += blueDropScore;
   }
   
   // Log the current score for this drop
   console.log(`Current Score for this drop: ${DropCollectedScore}`);
+  
+  // Display the score to the player (you can customize this part to show it in the UI)
+  // For example, you could create a score element and update its text content
+  let scoreElement = document.getElementById("score");
+  if (!scoreElement) {
+    scoreElement = document.createElement("div");
+    scoreElement.id = "score";
+    scoreElement.style.position = "absolute";
+    scoreElement.style.top = "10px";
+    scoreElement.style.right = "10px";
+    scoreElement.style.fontSize = "24px";
+    scoreElement.style.fontWeight = "bold";
+    document.getElementById("game-container").appendChild(scoreElement);
+  }
+  scoreElement.textContent = `Score: ${DropCollectedScore}`;
 }

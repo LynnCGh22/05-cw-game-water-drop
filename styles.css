@@ -130,7 +130,7 @@ body {
     cursor: ew-resize;
 }
 
-.water-drop {
+.clean-water-drop {
     position: absolute;
     width: 60px;  /* increased from 40px */
     height: 60px; /* increased from 40px */
