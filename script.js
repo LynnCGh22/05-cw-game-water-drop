@@ -144,6 +144,10 @@ function startTimer() {
   }, 1000);
 }
 
+function RulesSection() {
+  print("Catch the blue clean-water drops to earn +10 points each. \nWatch out for the green and brown polluted drops—touching one will cost you 10 points and slow your progress. \nFill the water bar by catching clean drops, but be careful: if you catch too many dirty drops, your water bar will decrease. \nThe game lasts for 30 seconds, so move quickly and aim for a high score! \nYou can pause or restart the game at any time using the buttons provided.");
+}
+
 function endGame() {
   gameRunning = false;
   gamePaused = false;
