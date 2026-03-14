@@ -491,3 +491,26 @@ body {
         transform-origin: bottom center;
     }
 }
+
+.progress-wrapper {
+    width: 200px;
+    height: 20px;
+    background-color: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-left: 20px;
+}
+
+#score-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #2E9DF7; /* charity: water blue */
+    transition: width 0.3s ease;
+}
+
+@media score-bar {
+    .score-panel {
+        width: 100%;
+    }
+
+}
