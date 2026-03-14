@@ -83,4 +83,16 @@ function createDrop() {
     }
     drop.remove(); // Remove the drop after it's caught
   });
+
+  // Check the color of the drop and update the score accordingly
+  if (drop.classList.contains("dirty-water-drop-green")) {
+    DropCollectedScore += greenDropScore;
+  } else if (drop.classList.contains("dirty-water-drop-brown")) {
+    DropCollectedScore += brownDropScore;
+  } else if (drop.classList.contains("water-drop")) {
+    DropCollectedScore += blueDropScore;
+  }
+  
+  // Log the current score for this drop
+  console.log(`Current Score for this drop: ${DropCollectedScore}`);
 }
