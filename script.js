@@ -7,7 +7,8 @@ const GAME_DURATION = 30;
 let timeLeft = GAME_DURATION;
 const CLEAN_DROP_CHANCE = 0.7;
 const FAKE_DROP_CHANCE = 0.2;
-const FAKE_DROP_FLIP_DELAY_MS = 1800;
+const FAKE_DROP_FLIP_DELAY_MS = 1200;
+const FAKE_DROP_WARNING_MS = 350;
 const SCORE_PER_CLEAN_DROP = 10;
 const SCORE_PER_DIRTY_DROP = -10;
 const MAX_WATER_SCORE = 100; // 10 clean drops fills the bar
@@ -339,8 +340,7 @@ function createDrop() {
 
   let dropResolved = false;
   let collisionFrameId;
-  let fakeDropElapsedMs = 0;
-  let fakeDropLastFrameTime;
+  const fakeDropSpawnTime = performance.now();
 
   function flipFakeDrop() {
     if (
@@ -388,24 +388,22 @@ function createDrop() {
     drop.remove();
   }
 
-  function checkBucketCollision(timestamp) {
+  function checkBucketCollision() {
     if (dropResolved || !drop.isConnected) return;
 
     if (gamePaused) {
-      if (fakeDrop) {
-        fakeDropLastFrameTime = timestamp;
-      }
       collisionFrameId = requestAnimationFrame(checkBucketCollision);
       return;
     }
 
     if (fakeDrop && !drop.classList.contains("flipped")) {
-      if (typeof fakeDropLastFrameTime === "number") {
-        fakeDropElapsedMs += timestamp - fakeDropLastFrameTime;
-      }
-      fakeDropLastFrameTime = timestamp;
+      const fakeDropAgeMs = performance.now() - fakeDropSpawnTime;
 
-      if (fakeDropElapsedMs >= FAKE_DROP_FLIP_DELAY_MS) {
+      if (fakeDropAgeMs >= FAKE_DROP_FLIP_DELAY_MS - FAKE_DROP_WARNING_MS) {
+        drop.classList.add("warning");
+      }
+
+      if (fakeDropAgeMs >= FAKE_DROP_FLIP_DELAY_MS) {
         flipFakeDrop();
       }
     }
