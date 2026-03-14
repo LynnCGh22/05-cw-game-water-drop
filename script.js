@@ -6,6 +6,7 @@ const SCORE_PER_CLEAN_DROP = 10;
 const SCORE_PER_DIRTY_DROP = -10;
 let currentScore = 0;
 const catcher = document.querySelector(".catcher");
+const bucket = document.querySelector(".bucket");
 const catcherNav = document.getElementById("catcher-nav");
 const scoreElement = document.getElementById("score");
 
@@ -25,6 +26,23 @@ function getRandomDropType() {
 
 function updateScoreDisplay() {
   scoreElement.textContent = currentScore;
+}
+
+function getDropScore(drop) {
+  if (drop.classList.contains("clean-water-drop")) {
+    return SCORE_PER_CLEAN_DROP;
+  }
+
+  return SCORE_PER_DIRTY_DROP;
+}
+
+function intersects(rectA, rectB) {
+  return !(
+    rectA.right < rectB.left ||
+    rectA.left > rectB.right ||
+    rectA.bottom < rectB.top ||
+    rectA.top > rectB.bottom
+  );
 }
 
 // Wait for button click to start the game
@@ -57,6 +75,7 @@ function createDrop() {
   const sizeMultiplier = Math.random() * 0.8 + 0.5;
   const size = initialSize * sizeMultiplier;
   drop.style.width = drop.style.height = `${size}px`;
+  drop.style.pointerEvents = "none";
 
   // Position the drop randomly across the game width
   // Subtract 60 pixels to keep drops fully inside the container
@@ -70,23 +89,46 @@ function createDrop() {
   // Add the new drop to the game screen
   document.getElementById("game-container").appendChild(drop);
 
-  // Remove drops that reach the bottom (weren't clicked)
-  drop.addEventListener("animationend", () => {
-    drop.remove(); // Clean up drops that weren't caught
-  });
+  let dropResolved = false;
+  let collisionFrameId;
 
-  // Check for clicks on the drop to "catch" it
-  drop.addEventListener("click", () => {
-    // Check if the drop is a clean water drop
-    if (drop.classList.contains("clean-water-drop")) {
-      currentScore += SCORE_PER_CLEAN_DROP;
-      alert("You caught a clean water drop! Great job!");
-    } else {
-      currentScore += SCORE_PER_DIRTY_DROP;
-      alert("Oh no! You caught a dirty water drop. Try again!");
+  function resolveDrop(caughtByBucket = false) {
+    if (dropResolved) return;
+
+    dropResolved = true;
+    cancelAnimationFrame(collisionFrameId);
+
+    if (caughtByBucket) {
+      currentScore += getDropScore(drop);
+      updateScoreDisplay();
+      drop.style.animationPlayState = "paused";
+      setTimeout(() => {
+        drop.remove();
+      }, 80);
+      return;
     }
 
-    updateScoreDisplay();
-    drop.remove(); // Remove the drop after it's caught
+    drop.remove();
+  }
+
+  function checkBucketCollision() {
+    if (dropResolved || !drop.isConnected) return;
+
+    const dropRect = drop.getBoundingClientRect();
+    const bucketRect = bucket.getBoundingClientRect();
+
+    if (intersects(dropRect, bucketRect)) {
+      resolveDrop(true);
+      return;
+    }
+
+    collisionFrameId = requestAnimationFrame(checkBucketCollision);
+  }
+
+  collisionFrameId = requestAnimationFrame(checkBucketCollision);
+
+  // Remove drops that reach the bottom (weren't caught by the bucket)
+  drop.addEventListener("animationend", () => {
+    resolveDrop(); // Clean up drops that weren't caught
   });
 }
