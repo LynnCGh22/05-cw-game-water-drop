@@ -30,6 +30,11 @@ const CONFETTI_COLORS = [
   "#FF902A",
   "#F5402C",
   "#F16061",
+  "#A66CFF",
+  "#FF5CA2",
+  "#3ADDD8",
+  "#FFB347",
+  "#FF6961",
 ];
 
 function updateCatcherPosition(positionPercent) {
