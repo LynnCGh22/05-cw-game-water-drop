@@ -235,8 +235,10 @@ function createDrop() {
       updateScoreDisplay();
       if (drop.classList.contains("clean-water-drop")) {
         waterCollected = Math.min(waterCollected + SCORE_PER_CLEAN_DROP, MAX_WATER_SCORE);
-        updateWaterBar();
+      } else {
+        waterCollected = Math.max(waterCollected + SCORE_PER_DIRTY_DROP, 0);
       }
+      updateWaterBar();
       drop.style.animationPlayState = "paused";
       setTimeout(() => {
         drop.remove();
