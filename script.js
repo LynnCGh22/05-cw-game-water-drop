@@ -8,7 +8,10 @@ let timeLeft = GAME_DURATION;
 const CLEAN_DROP_CHANCE = 0.7;
 const SCORE_PER_CLEAN_DROP = 10;
 const SCORE_PER_DIRTY_DROP = -10;
+const MAX_WATER_SCORE = 100; // 10 clean drops fills the bar
 let currentScore = 0;
+let waterCollected = 0;
+const waterBarFill = document.getElementById("score-bar");
 const catcher = document.querySelector(".catcher");
 const bucket = document.querySelector(".bucket");
 const grass = document.querySelector(".grass");
@@ -147,7 +150,9 @@ function restartGame() {
     .forEach((drop) => drop.remove());
   hidePauseOverlay();
   currentScore = 0;
+  waterCollected = 0;
   updateScoreDisplay();
+  updateWaterBar();
   timeLeft = GAME_DURATION;
   timeElement.textContent = GAME_DURATION;
   gameRunning = true;
@@ -166,7 +171,9 @@ function endGameAndReset() {
   hidePauseOverlay();
   document.getElementById("pause-btn").hidden = true;
   currentScore = 0;
+  waterCollected = 0;
   updateScoreDisplay();
+  updateWaterBar();
   timeLeft = GAME_DURATION;
   timeElement.textContent = GAME_DURATION;
 }
@@ -177,6 +184,8 @@ function startGame() {
 
   gameRunning = true;
   currentScore = 0;
+  waterCollected = 0;
+  updateWaterBar();
   updateScoreDisplay();
   timeLeft = GAME_DURATION;
   timeElement.textContent = timeLeft;
@@ -224,6 +233,10 @@ function createDrop() {
     if (caughtByBucket) {
       currentScore += getDropScore(drop);
       updateScoreDisplay();
+      if (drop.classList.contains("clean-water-drop")) {
+        waterCollected = Math.min(waterCollected + SCORE_PER_CLEAN_DROP, MAX_WATER_SCORE);
+        updateWaterBar();
+      }
       drop.style.animationPlayState = "paused";
       setTimeout(() => {
         drop.remove();
@@ -270,7 +283,12 @@ function createDrop() {
 }
 
 function updateScoreBar(currentScore, maxScore) {
-    const percentage = (currentScore / maxScore) * 100;
-    document.getElementById("score-bar").style.width = percentage + "%";
+    const percentage = Math.max(0, (currentScore / maxScore) * 100);
+    document.getElementById("score-bar").style.height = percentage + "%";
+}
+
+function updateWaterBar() {
+    const pct = (waterCollected / MAX_WATER_SCORE) * 100;
+    waterBarFill.style.height = pct + "%";
 }
 
