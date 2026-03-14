@@ -6,6 +6,8 @@ let timerInterval;
 const GAME_DURATION = 30;
 let timeLeft = GAME_DURATION;
 const CLEAN_DROP_CHANCE = 0.7;
+const FAKE_DROP_CHANCE = 0.2;
+const FAKE_DROP_FLIP_DELAY_MS = 1800;
 const SCORE_PER_CLEAN_DROP = 10;
 const SCORE_PER_DIRTY_DROP = -10;
 const MAX_WATER_SCORE = 100; // 10 clean drops fills the bar
@@ -51,10 +53,8 @@ function getRandomDropType() {
     : "dirty-water-drop-brown";
 }
 
-// Decide if this drop is fake (20% chance)
-const isFake = Math.random() < 0.2;
-if (isFake) {
-    drop.classList.add("fake-drop");
+function isFake() {
+  return Math.random() < FAKE_DROP_CHANCE;
 }
 
 
@@ -172,6 +172,7 @@ function RulesSection() {
   const rules = [
     "Catch blue clean-water drops to earn +10 points.",
     "Green or brown dirty drops cost 10 points if caught.",
+    "20% of blue drops are fake and turn brown if not caught quickly.",
     "Each clean drop fills the water bar; dirty drops reduce it.",
     "The round lasts 30 seconds, so move quickly with the slider.",
     "Use Pause, Resume, or Restart anytime during gameplay.",
@@ -311,6 +312,11 @@ function createDrop() {
   // Create a new div element that will be our water drop
   const drop = document.createElement("div");
   drop.className = getRandomDropType();
+  const fakeDrop = drop.classList.contains("clean-water-drop") && isFake();
+
+  if (fakeDrop) {
+    drop.classList.add("fake-drop");
+  }
 
   // Make drops different sizes for visual variety
   const initialSize = 60;
@@ -333,6 +339,22 @@ function createDrop() {
 
   let dropResolved = false;
   let collisionFrameId;
+  let fakeDropElapsedMs = 0;
+  let fakeDropLastFrameTime;
+
+  function flipFakeDrop() {
+    if (
+      dropResolved ||
+      !drop.isConnected ||
+      !drop.classList.contains("fake-drop") ||
+      drop.classList.contains("flipped")
+    ) {
+      return;
+    }
+
+    drop.classList.remove("clean-water-drop");
+    drop.classList.add("dirty-water-drop-brown", "flipped");
+  }
 
   function resolveDrop(caughtByBucket = false, hitGrass = false) {
     if (dropResolved) return;
@@ -366,12 +388,26 @@ function createDrop() {
     drop.remove();
   }
 
-  function checkBucketCollision() {
+  function checkBucketCollision(timestamp) {
     if (dropResolved || !drop.isConnected) return;
 
     if (gamePaused) {
+      if (fakeDrop) {
+        fakeDropLastFrameTime = timestamp;
+      }
       collisionFrameId = requestAnimationFrame(checkBucketCollision);
       return;
+    }
+
+    if (fakeDrop && !drop.classList.contains("flipped")) {
+      if (typeof fakeDropLastFrameTime === "number") {
+        fakeDropElapsedMs += timestamp - fakeDropLastFrameTime;
+      }
+      fakeDropLastFrameTime = timestamp;
+
+      if (fakeDropElapsedMs >= FAKE_DROP_FLIP_DELAY_MS) {
+        flipFakeDrop();
+      }
     }
 
     const dropRect = drop.getBoundingClientRect();
