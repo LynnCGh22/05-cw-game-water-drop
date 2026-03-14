@@ -64,4 +64,15 @@ function createDrop() {
   drop.addEventListener("animationend", () => {
     drop.remove(); // Clean up drops that weren't caught
   });
+
+  // Check for clicks on the drop to "catch" it
+  drop.addEventListener("click", () => {
+    // Check if the drop is a clean water drop
+    if (drop.classList.contains("water-drop")) {
+      alert("You caught a clean water drop! Great job!");
+    } else {
+      alert("Oh no! You caught a dirty water drop. Try again!");
+    }
+    drop.remove(); // Remove the drop after it's caught
+  });
 }
