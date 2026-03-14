@@ -2,8 +2,12 @@
 let gameRunning = false; // Keeps track of whether game is active or not
 let dropMaker; // Will store our timer that creates drops regularly
 const CLEAN_DROP_CHANCE = 0.7;
+const SCORE_PER_CLEAN_DROP = 10;
+const SCORE_PER_DIRTY_DROP = -10;
+let currentScore = 0;
 const catcher = document.querySelector(".catcher");
 const catcherNav = document.getElementById("catcher-nav");
+const scoreElement = document.getElementById("score");
 
 function updateCatcherPosition(positionPercent) {
   catcher.style.left = `${positionPercent}%`;
@@ -11,12 +15,16 @@ function updateCatcherPosition(positionPercent) {
 
 function getRandomDropType() {
   if (Math.random() < CLEAN_DROP_CHANCE) {
-    return "water-drop";
+    return "clean-water-drop";
   }
 
   return Math.random() < 0.5
     ? "dirty-water-drop-green"
     : "dirty-water-drop-brown";
+}
+
+function updateScoreDisplay() {
+  scoreElement.textContent = currentScore;
 }
 
 // Wait for button click to start the game
@@ -32,6 +40,8 @@ function startGame() {
   if (gameRunning) return;
 
   gameRunning = true;
+  currentScore = 0;
+  updateScoreDisplay();
 
   // Create new drops every second (1000 milliseconds)
   dropMaker = setInterval(createDrop, 1000);
@@ -60,14 +70,6 @@ function createDrop() {
   // Add the new drop to the game screen
   document.getElementById("game-container").appendChild(drop);
 
-  // Create a variable to keep track of the score for this game
-  let DropCollectedScore = 0;
-
-  // Create variables for each drop color
-  const greenDropScore = -10;
-  const brownDropScore = -10;
-  const blueDropScore = 10;
-
   // Remove drops that reach the bottom (weren't clicked)
   drop.addEventListener("animationend", () => {
     drop.remove(); // Clean up drops that weren't caught
@@ -77,37 +79,14 @@ function createDrop() {
   drop.addEventListener("click", () => {
     // Check if the drop is a clean water drop
     if (drop.classList.contains("clean-water-drop")) {
+      currentScore += SCORE_PER_CLEAN_DROP;
       alert("You caught a clean water drop! Great job!");
     } else {
+      currentScore += SCORE_PER_DIRTY_DROP;
       alert("Oh no! You caught a dirty water drop. Try again!");
     }
+
+    updateScoreDisplay();
     drop.remove(); // Remove the drop after it's caught
   });
-
-  // Check the color of the drop and update the score accordingly
-  if (drop.classList.contains("dirty-water-drop-green")) {
-    DropCollectedScore += greenDropScore;
-  } else if (drop.classList.contains("dirty-water-drop-brown")) {
-    DropCollectedScore += brownDropScore;
-  } else if (drop.classList.contains("clean-water-drop")) {
-    DropCollectedScore += blueDropScore;
-  }
-  
-  // Log the current score for this drop
-  console.log(`Current Score for this drop: ${DropCollectedScore}`);
-  
-  // Display the score to the player (you can customize this part to show it in the UI)
-  // For example, you could create a score element and update its text content
-  let scoreElement = document.getElementById("score");
-  if (!scoreElement) {
-    scoreElement = document.createElement("div");
-    scoreElement.id = "score";
-    scoreElement.style.position = "absolute";
-    scoreElement.style.top = "10px";
-    scoreElement.style.right = "10px";
-    scoreElement.style.fontSize = "24px";
-    scoreElement.style.fontWeight = "bold";
-    document.getElementById("game-container").appendChild(scoreElement);
-  }
-  scoreElement.textContent = `Score: ${DropCollectedScore}`;
 }

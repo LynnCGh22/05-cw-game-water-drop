@@ -175,7 +175,7 @@ body {
     z-index: 2;
 }
 
-.water-drop:hover,
+.clean-water-drop:hover,
 .dirty-water-drop-brown:hover,
 .dirty-water-drop-green:hover {
     transform: scale(1.1);  /* Slight grow effect on hover */
