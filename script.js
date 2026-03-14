@@ -51,6 +51,14 @@ function getRandomDropType() {
     : "dirty-water-drop-brown";
 }
 
+// Decide if this drop is fake (20% chance)
+const isFake = Math.random() < 0.2;
+if (isFake) {
+    drop.classList.add("fake-drop");
+}
+
+
+
 function updateScoreDisplay() {
   scoreElement.textContent = currentScore;
 }

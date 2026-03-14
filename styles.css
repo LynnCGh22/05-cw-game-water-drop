@@ -366,9 +366,19 @@ body {
     z-index: 2;
 }
 
+.fake-drop {
+    background-color: #0099ff; /* starts blue */
+}
+
+.fake-drop.flipped {
+    background-color: #8B4513; /* brown */
+}
+
+
 .clean-water-drop:hover,
 .dirty-water-drop-brown:hover,
-.dirty-water-drop-green:hover {
+.dirty-water-drop-green:hover,
+.fake-drop:hover {
     transform: scale(1.1);  /* Slight grow effect on hover */
 }
 
