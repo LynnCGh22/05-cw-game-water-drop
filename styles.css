@@ -50,6 +50,20 @@ body {
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
+.charity-logo {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    width: 150px;
+    height: auto;
+    z-index: 20;
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 8px 12px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
 .game-wrapper {
     display: flex;
     flex-direction: column;
@@ -565,6 +579,13 @@ body {
         width: 52px;
         top: 10px;
         right: 10px;
+    }
+
+    .charity-logo {
+        width: 110px;
+        top: 10px;
+        left: 10px;
+        padding: 6px 8px;
     }
 }
 
