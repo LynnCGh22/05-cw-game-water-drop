@@ -7,8 +7,10 @@ const GAME_DURATION = 30;
 let timeLeft = GAME_DURATION;
 const CLEAN_DROP_CHANCE = 0.7;
 const FAKE_DROP_CHANCE = 0.2;
-const FAKE_DROP_FLIP_DELAY_MS = 1200;
-const FAKE_DROP_WARNING_MS = 350;
+const FAKE_DROP_FLIP_DELAY_MS = 900;
+const FAKE_DROP_WARNING_MS = 600;
+const FAKE_DROP_WARNING_DISTANCE_PX = 170;
+const FAKE_DROP_FLIP_DISTANCE_PX = 95;
 const SCORE_PER_CLEAN_DROP = 10;
 const SCORE_PER_DIRTY_DROP = -10;
 const MAX_WATER_SCORE = 100; // 10 clean drops fills the bar
@@ -396,21 +398,28 @@ function createDrop() {
       return;
     }
 
-    if (fakeDrop && !drop.classList.contains("flipped")) {
-      const fakeDropAgeMs = performance.now() - fakeDropSpawnTime;
-
-      if (fakeDropAgeMs >= FAKE_DROP_FLIP_DELAY_MS - FAKE_DROP_WARNING_MS) {
-        drop.classList.add("warning");
-      }
-
-      if (fakeDropAgeMs >= FAKE_DROP_FLIP_DELAY_MS) {
-        flipFakeDrop();
-      }
-    }
-
     const dropRect = drop.getBoundingClientRect();
     const bucketRect = bucket.getBoundingClientRect();
     const grassRect = grass.getBoundingClientRect();
+
+    if (fakeDrop && !drop.classList.contains("flipped")) {
+      const fakeDropAgeMs = performance.now() - fakeDropSpawnTime;
+      const distanceToBucketPx = bucketRect.top - dropRect.bottom;
+      const shouldWarn =
+        fakeDropAgeMs >= FAKE_DROP_FLIP_DELAY_MS - FAKE_DROP_WARNING_MS ||
+        distanceToBucketPx <= FAKE_DROP_WARNING_DISTANCE_PX;
+      const shouldFlip =
+        fakeDropAgeMs >= FAKE_DROP_FLIP_DELAY_MS ||
+        distanceToBucketPx <= FAKE_DROP_FLIP_DISTANCE_PX;
+
+      if (shouldWarn) {
+        drop.classList.add("warning");
+      }
+
+      if (shouldFlip) {
+        flipFakeDrop();
+      }
+    }
 
     if (intersects(dropRect, bucketRect)) {
       resolveDrop(true);
