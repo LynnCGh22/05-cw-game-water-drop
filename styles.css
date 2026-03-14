@@ -439,6 +439,16 @@ body {
     }
 }
 
+@keyframes splash {
+    0%   { transform: scale(1);   opacity: 1; }
+    40%  { transform: scale(1.8) scaleY(0.5); opacity: 0.7; }
+    100% { transform: scale(2.4) scaleY(0.2); opacity: 0; }
+}
+
+.splash {
+    animation: splash 0.3s ease-out forwards !important;
+}
+
 @media (max-width: 850px) {
     .game-wrapper, .score-panel, #game-container, .movement-nav {
         width: 95vw;

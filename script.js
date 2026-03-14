@@ -11,6 +11,7 @@ const SCORE_PER_DIRTY_DROP = -10;
 let currentScore = 0;
 const catcher = document.querySelector(".catcher");
 const bucket = document.querySelector(".bucket");
+const grass = document.querySelector(".grass");
 const gameContainer = document.getElementById("game-container");
 const clouds = Array.from(document.querySelectorAll(".cloud"));
 const catcherNav = document.getElementById("catcher-nav");
@@ -214,7 +215,7 @@ function createDrop() {
   let dropResolved = false;
   let collisionFrameId;
 
-  function resolveDrop(caughtByBucket = false) {
+  function resolveDrop(caughtByBucket = false, hitGrass = false) {
     if (dropResolved) return;
 
     dropResolved = true;
@@ -227,6 +228,13 @@ function createDrop() {
       setTimeout(() => {
         drop.remove();
       }, 80);
+      return;
+    }
+
+    if (hitGrass) {
+      drop.style.animationPlayState = "paused";
+      drop.classList.add("splash");
+      setTimeout(() => drop.remove(), 300);
       return;
     }
 
@@ -243,9 +251,15 @@ function createDrop() {
 
     const dropRect = drop.getBoundingClientRect();
     const bucketRect = bucket.getBoundingClientRect();
+    const grassRect = grass.getBoundingClientRect();
 
     if (intersects(dropRect, bucketRect)) {
       resolveDrop(true);
+      return;
+    }
+
+    if (intersects(dropRect, grassRect)) {
+      resolveDrop(false, true);
       return;
     }
 
@@ -253,9 +267,4 @@ function createDrop() {
   }
 
   collisionFrameId = requestAnimationFrame(checkBucketCollision);
-
-  // Remove drops that reach the bottom (weren't caught by the bucket)
-  drop.addEventListener("animationend", () => {
-    resolveDrop(); // Clean up drops that weren't caught
-  });
 }
