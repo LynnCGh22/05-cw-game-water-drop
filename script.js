@@ -1,6 +1,8 @@
 // Variables to control game state
 let gameRunning = false; // Keeps track of whether game is active or not
 let dropMaker; // Will store our timer that creates drops regularly
+let timerInterval;
+const GAME_DURATION = 30;
 const CLEAN_DROP_CHANCE = 0.7;
 const SCORE_PER_CLEAN_DROP = 10;
 const SCORE_PER_DIRTY_DROP = -10;
@@ -11,6 +13,7 @@ const gameContainer = document.getElementById("game-container");
 const clouds = Array.from(document.querySelectorAll(".cloud"));
 const catcherNav = document.getElementById("catcher-nav");
 const scoreElement = document.getElementById("score");
+const timeElement = document.getElementById("time");
 
 function updateCatcherPosition(positionPercent) {
   catcher.style.left = `${positionPercent}%`;
@@ -72,6 +75,17 @@ catcherNav.addEventListener("input", (event) => {
 
 updateCatcherPosition(catcherNav.value);
 
+function endGame() {
+  gameRunning = false;
+  clearInterval(dropMaker);
+  clearInterval(timerInterval);
+  document
+    .querySelectorAll(".clean-water-drop, .dirty-water-drop-green, .dirty-water-drop-brown")
+    .forEach((drop) => drop.remove());
+  alert(`Game Over! Your final score is: ${currentScore}`);
+  timeElement.textContent = GAME_DURATION;
+}
+
 function startGame() {
   // Prevent multiple games from running at once
   if (gameRunning) return;
@@ -79,6 +93,17 @@ function startGame() {
   gameRunning = true;
   currentScore = 0;
   updateScoreDisplay();
+
+  // Start the countdown timer
+  let timeLeft = GAME_DURATION;
+  timeElement.textContent = timeLeft;
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timeElement.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      endGame();
+    }
+  }, 1000);
 
   // Create new drops every second (1000 milliseconds)
   dropMaker = setInterval(createDrop, 1000);
@@ -150,35 +175,4 @@ function createDrop() {
   drop.addEventListener("animationend", () => {
     resolveDrop(); // Clean up drops that weren't caught
   });
-
-  // Display the countdown timer for 30 seconds
-  setTimeout(() => {
-    endGame();
-  }, 30000);
-
-  // Display the timer countdown on the screen
-  const timerElement = document.getElementById("timer");
-  let timeLeft = 30;
-  timerElement.textContent = `Time: ${timeLeft}s`;
-
-  const timerInterval = setInterval(() => {
-    timeLeft--;
-    timerElement.textContent = `Time: ${timeLeft}s`;
-    
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-    }
-  }, 1000);
-
-  // End the game after 30 seconds and show final score
-  function endGame() {
-    gameRunning = false;
-    clearInterval(dropMaker);
-    clearInterval(timerInterval);
-    alert(`Game Over! Your final score is: ${currentScore}`);
-
-    // Remove all remaining drops from the screen
-    document.querySelectorAll(".clean-water-drop, .dirty-water-drop-green, .dirty-water-drop-brown").forEach(drop => drop.remove());
-  }
-  
 }
