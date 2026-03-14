@@ -7,6 +7,8 @@ const SCORE_PER_DIRTY_DROP = -10;
 let currentScore = 0;
 const catcher = document.querySelector(".catcher");
 const bucket = document.querySelector(".bucket");
+const gameContainer = document.getElementById("game-container");
+const clouds = Array.from(document.querySelectorAll(".cloud"));
 const catcherNav = document.getElementById("catcher-nav");
 const scoreElement = document.getElementById("score");
 
@@ -45,6 +47,23 @@ function intersects(rectA, rectB) {
   );
 }
 
+function getDropStartX(size) {
+  const fallbackX = Math.random() * (gameContainer.offsetWidth - size);
+
+  if (clouds.length === 0) {
+    return fallbackX;
+  }
+
+  const cloud = clouds[Math.floor(Math.random() * clouds.length)];
+  const cloudRect = cloud.getBoundingClientRect();
+  const containerRect = gameContainer.getBoundingClientRect();
+  const cloudCenterX = cloudRect.left - containerRect.left + cloudRect.width / 2;
+  const jitter = (Math.random() - 0.5) * Math.min(cloudRect.width * 0.6, 34);
+  const left = cloudCenterX + jitter - size / 2;
+
+  return Math.max(0, Math.min(left, gameContainer.offsetWidth - size));
+}
+
 // Wait for button click to start the game
 document.getElementById("start-btn").addEventListener("click", startGame);
 catcherNav.addEventListener("input", (event) => {
@@ -79,15 +98,15 @@ function createDrop() {
 
   // Position the drop randomly across the game width
   // Subtract 60 pixels to keep drops fully inside the container
-  const gameWidth = document.getElementById("game-container").offsetWidth;
-  const xPosition = Math.random() * (gameWidth - 60);
+  const xPosition = getDropStartX(size);
   drop.style.left = xPosition + "px";
+  drop.style.top = "46px";
 
   // Make drops fall for 4 seconds
   drop.style.animationDuration = "4s";
 
   // Add the new drop to the game screen
-  document.getElementById("game-container").appendChild(drop);
+  gameContainer.appendChild(drop);
 
   let dropResolved = false;
   let collisionFrameId;
