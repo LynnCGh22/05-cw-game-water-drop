@@ -150,4 +150,35 @@ function createDrop() {
   drop.addEventListener("animationend", () => {
     resolveDrop(); // Clean up drops that weren't caught
   });
+
+  // Display the countdown timer for 30 seconds
+  setTimeout(() => {
+    endGame();
+  }, 30000);
+
+  // Display the timer countdown on the screen
+  const timerElement = document.getElementById("timer");
+  let timeLeft = 30;
+  timerElement.textContent = `Time: ${timeLeft}s`;
+
+  const timerInterval = setInterval(() => {
+    timeLeft--;
+    timerElement.textContent = `Time: ${timeLeft}s`;
+    
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+    }
+  }, 1000);
+
+  // End the game after 30 seconds and show final score
+  function endGame() {
+    gameRunning = false;
+    clearInterval(dropMaker);
+    clearInterval(timerInterval);
+    alert(`Game Over! Your final score is: ${currentScore}`);
+
+    // Remove all remaining drops from the screen
+    document.querySelectorAll(".clean-water-drop, .dirty-water-drop-green, .dirty-water-drop-brown").forEach(drop => drop.remove());
+  }
+  
 }
