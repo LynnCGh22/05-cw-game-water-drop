@@ -60,6 +60,14 @@ function createDrop() {
   // Add the new drop to the game screen
   document.getElementById("game-container").appendChild(drop);
 
+  // Create a variable to keep track of the score for this game
+  let DropCollectedScore = 0;
+
+  // Create variables for each drop color
+  const greenDropScore = -10;
+  const brownDropScore = -10;
+  const blueDropScore = 10;
+
   // Remove drops that reach the bottom (weren't clicked)
   drop.addEventListener("animationend", () => {
     drop.remove(); // Clean up drops that weren't caught
