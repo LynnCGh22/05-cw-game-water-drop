@@ -20,6 +20,8 @@ const clouds = Array.from(document.querySelectorAll(".cloud"));
 const catcherNav = document.getElementById("catcher-nav");
 const scoreElement = document.getElementById("score");
 const timeElement = document.getElementById("time");
+const rulesSectionElement = document.getElementById("rules-section");
+let rulesExpanded = true;
 const CONFETTI_COLORS = [
   "#FFC907",
   "#2E9DF7",
@@ -93,6 +95,7 @@ catcherNav.addEventListener("input", (event) => {
 });
 
 updateCatcherPosition(catcherNav.value);
+RulesSection();
 
 function showPauseOverlay() {
   document.getElementById("pause-overlay").hidden = false;
@@ -144,8 +147,54 @@ function startTimer() {
   }, 1000);
 }
 
+function toggleRulesSection() {
+  rulesExpanded = !rulesExpanded;
+  RulesSection();
+}
+
 function RulesSection() {
-  print("Catch the blue clean-water drops to earn +10 points each. \nWatch out for the green and brown polluted drops—touching one will cost you 10 points and slow your progress. \nFill the water bar by catching clean drops, but be careful: if you catch too many dirty drops, your water bar will decrease. \nThe game lasts for 30 seconds, so move quickly and aim for a high score! \nYou can pause or restart the game at any time using the buttons provided.");
+  const target = rulesSectionElement || document.querySelector(".rules-section");
+  if (!target) return;
+
+  const rules = [
+    "Catch blue clean-water drops to earn +10 points.",
+    "Green or brown dirty drops cost 10 points if caught.",
+    "Each clean drop fills the water bar; dirty drops reduce it.",
+    "The round lasts 30 seconds, so move quickly with the slider.",
+    "Use Pause, Resume, or Restart anytime during gameplay.",
+  ];
+
+  const header = document.createElement("div");
+  header.className = "rules-header";
+
+  const heading = document.createElement("h2");
+  heading.className = "rules-title";
+  heading.textContent = "How to Play";
+
+  const toggleButton = document.createElement("button");
+  toggleButton.type = "button";
+  toggleButton.className = "rules-toggle-btn";
+  toggleButton.textContent = rulesExpanded ? "Hide Rules" : "Show Rules";
+  toggleButton.setAttribute("aria-expanded", String(rulesExpanded));
+  toggleButton.addEventListener("click", toggleRulesSection);
+
+  header.append(heading, toggleButton);
+
+  const list = document.createElement("ol");
+  list.className = "rules-list";
+
+  rules.forEach((ruleText) => {
+    const item = document.createElement("li");
+    item.textContent = ruleText;
+    list.appendChild(item);
+  });
+
+  const content = document.createElement("div");
+  content.className = "rules-content";
+  content.hidden = !rulesExpanded;
+  content.appendChild(list);
+
+  target.replaceChildren(header, content);
 }
 
 function endGame() {
