@@ -634,3 +634,40 @@ body {
     font-size: 22px;
     color: #2E9DF7;
 }
+
+.celebration-confetti {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 15;
+}
+
+.celebration-confetti .confetti-piece {
+    position: absolute;
+    top: -16px;
+    width: 10px;
+    height: 6px;
+    opacity: 0;
+    border-radius: 2px;
+    animation: confettiFall var(--confetti-duration, 2.2s) linear forwards;
+    animation-delay: var(--confetti-delay, 0s);
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translate3d(0, -20px, 0) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate3d(
+            var(--confetti-drift, 0px),
+            var(--confetti-fall-distance, 640px),
+            0
+        ) rotate(var(--confetti-rotate, 540deg));
+        opacity: 0;
+    }
+}

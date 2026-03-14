@@ -20,6 +20,15 @@ const clouds = Array.from(document.querySelectorAll(".cloud"));
 const catcherNav = document.getElementById("catcher-nav");
 const scoreElement = document.getElementById("score");
 const timeElement = document.getElementById("time");
+const CONFETTI_COLORS = [
+  "#FFC907",
+  "#2E9DF7",
+  "#8BD1CB",
+  "#4FCB53",
+  "#FF902A",
+  "#F5402C",
+  "#F16061",
+];
 
 function updateCatcherPosition(positionPercent) {
   catcher.style.left = `${positionPercent}%`;
@@ -93,6 +102,38 @@ function hidePauseOverlay() {
   document.getElementById("pause-overlay").hidden = true;
 }
 
+function triggerConfetti() {
+  const existingLayer = gameContainer.querySelector(".celebration-confetti");
+  if (existingLayer) {
+    existingLayer.remove();
+  }
+
+  const confettiLayer = document.createElement("div");
+  confettiLayer.className = "celebration-confetti";
+  confettiLayer.style.setProperty(
+    "--confetti-fall-distance",
+    `${gameContainer.clientHeight + 40}px`
+  );
+
+  const pieceCount = 80;
+
+  for (let i = 0; i < pieceCount; i++) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.backgroundColor =
+      CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+    piece.style.setProperty("--confetti-drift", `${(Math.random() - 0.5) * 220}px`);
+    piece.style.setProperty("--confetti-rotate", `${Math.random() * 1080 - 540}deg`);
+    piece.style.setProperty("--confetti-duration", `${1.8 + Math.random() * 1.2}s`);
+    piece.style.setProperty("--confetti-delay", `${Math.random() * 0.35}s`);
+    confettiLayer.appendChild(piece);
+  }
+
+  gameContainer.appendChild(confettiLayer);
+  setTimeout(() => confettiLayer.remove(), 3200);
+}
+
 function startTimer() {
   timerInterval = setInterval(() => {
     timeLeft--;
@@ -113,9 +154,12 @@ function endGame() {
     .forEach((drop) => drop.remove());
   hidePauseOverlay();
   document.getElementById("pause-btn").hidden = true;
-  alert(`Game Over! Your final score is: ${currentScore}`);
-  timeLeft = GAME_DURATION;
-  timeElement.textContent = GAME_DURATION;
+  triggerConfetti();
+  setTimeout(() => {
+    alert(`Game Over! Your final score is: ${currentScore}`);
+    timeLeft = GAME_DURATION;
+    timeElement.textContent = GAME_DURATION;
+  }, 1100);
 }
 
 function pauseGame() {
