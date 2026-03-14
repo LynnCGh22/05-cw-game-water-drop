@@ -268,3 +268,9 @@ function createDrop() {
 
   collisionFrameId = requestAnimationFrame(checkBucketCollision);
 }
+
+function updateScoreBar(currentScore, maxScore) {
+    const percentage = (currentScore / maxScore) * 100;
+    document.getElementById("score-bar").style.width = percentage + "%";
+}
+
