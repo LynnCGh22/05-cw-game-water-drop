@@ -1,0 +1,21 @@
+{
+  "name": "AquaRise - Water Drop Rush",
+  "short_name": "AquaRise",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2e9df7",
+  "icons": [
+    {
+      "src": "img/water-can.png",
+      "sizes": "465x465",
+      "type": "image/png"
+    },
+    {
+      "src": "img/water-can-transparent.png",
+      "sizes": "600x600",
+      "type": "image/png"
+    }
+  ]
+}
